@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  ollama:
+    build: .
+    ports:
+      - '8080:8080'
+    environment:
+      - OLLAMA_HOST=0.0.0.0:8080
+    volumes:
+      - ollama_data:/root/.ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:8080']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    entrypoint: >
+      sh -c "ollama serve --host 0.0.0.0:8080 &
+             sleep 10 && ollama run deepseek-r1:1.5b &&
+             tail -f /dev/null"
+
+volumes:
+  ollama_data:

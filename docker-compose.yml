@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  ollama:
+    build: .
+    ports:
+      - '8080:8080' # Mapeamos el puerto 8080
+    environment:
+      - OLLAMA_HOST=0.0.0.0:8080 # Hacemos que Ollama escuche en todas las interfaces
+    volumes:
+      - ollama_data:/root/.ollama # Persistencia de datos de Ollama
+
+volumes:
+  ollama_data:
